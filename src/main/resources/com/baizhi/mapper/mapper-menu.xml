@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.baizhi.dao.MenuDao">
+
+    <resultMap id="menu" type="Menu">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="iconCls" property="iconCls"/>
+        <result column="href" property="href"/>
+        <result column="parntId" property="parntId"/>
+        <result column="content" property="content"/>
+        <collection property="menus" ofType="Menu">
+            <id column="mid" property="id"/>
+            <result column="mtitle" property="title"/>
+            <result column="miconCls" property="iconCls"/>
+            <result column="mhref" property="href"/>
+            <result column="mparntId" property="parntId"/>
+            <result column="mcontent" property="content"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryAll" resultMap="menu">
+        SELECT
+            m3.*
+        FROM
+            (SELECT
+                m.*, m2.id mid,
+                m2.title mtitle,
+                m2.iconCls miconCls,
+                m2.href mhref,
+                m2.parntId mparntId,
+                m2.content mcontent
+            FROM
+                menu m
+            LEFT JOIN menu m2 ON m.id = m2.parntId) m3
+        WHERE m3.parntId IS NULL ORDER BY m3.content ASC;
+    </select>
+
+</mapper>
